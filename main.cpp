@@ -9,23 +9,20 @@ int main() {
     SetConsoleCP(1251);
 
     Triangle t;
-    int n;
-
-    cout << "ВВедіть координати вершини A (x y): ";
+    cout << "Введіть координати вершини A (x y): ";
     cin >> t.A.x >> t.A.y;
-    cout << "ВВедіть  координати вершини B (x y): ";
+    cout << "Введіть координати вершини B (x y): ";
     cin >> t.B.x >> t.B.y;
-    cout << "ВВедіть  координати вершини C (x y): ";
+    cout << "Введіть координати вершини C (x y): ";
     cin >> t.C.x >> t.C.y;
 
-    if (Vyrodzhenyi(t)) {
-        cout << "Трикутник є виродженим!" << endl;
-        return 1;
-    }
+    if (Vyrodzhenyi(t))
+        cout << "Увага: трикутник є виродженим!" << endl;
+    else
+        cout << "Площа трикутника: " << t.area() << endl;
 
-    cout << "Площа трикутника: " << Geron(t) << endl;
-
-    cout << "Скільки  точок перевірити? ";
+    int n;
+    cout << "Cкiльки точок перевірити? ";
     cin >> n;
 
     for (int i = 1; i <= n; i++) {
@@ -33,13 +30,13 @@ int main() {
         cout << "Точка " << i << " (x y): ";
         cin >> p.x >> p.y;
 
-        int result = VekDobytok(t, p);
-        if (result == 1)
-            cout << "Точка всередині трикутника" << endl;
-        else if (result == 2)
-            cout << "Точка на межі трикутника" << endl;
-        else
-            cout << "Точка ззовні трикутника" << endl;
+        if (t.onBorder(p)) {
+            cout << "Точка на  межі трикутника" << endl;
+        } else if (t.contains(p)) {
+            cout << "Точка належить трикутнику" << endl;
+        } else {
+            cout << "Точка не належить трикутнику" << endl;
+        }
     }
 
     return 0;

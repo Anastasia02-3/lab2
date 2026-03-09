@@ -7,13 +7,19 @@ struct Point {
     double x, y;
 };
 
+double distance(const Point &p1, const Point &p2);
+
 struct Triangle {
     Point A, B, C;
+
+    double area() const;
+
+    bool contains(const Point &P) const;
+
+    int onBorder(const Point &P) const;
 };
 
-double Vidstan(Point p1, Point p2);
-double Geron(Triangle t);
-bool Vyrodzhenyi(Triangle t);
-int VekDobytok(Triangle t, Point p);
+double heronArea(const Triangle &t);
+bool Vyrodzhenyi(const Triangle &t);
 
 #endif

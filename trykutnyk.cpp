@@ -1,31 +1,46 @@
 #include "trykutnyk.h"
 
-double Vidstan(Point p1, Point p2) {
-    return sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
+double distance(const Point &p1, const Point &p2) {
+    return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
 }
 
-double Geron(Triangle t) {
-    double a = Vidstan(t.A, t.B);
-    double b = Vidstan(t.B, t.C);
-    double c = Vidstan(t.C, t.A);
-    double p = (a + b + c) / 2;
-    return sqrt(p * (p - a) * (p - b) * (p - c));
+double heronArea(const Triangle &t) {
+    double a = distance(t.A, t.B);
+    double b = distance(t.B, t.C);
+    double c = distance(t.C, t.A);
+    double s = (a + b + c) / 2;
+    return sqrt(s * (s - a) * (s - b) * (s - c));
 }
 
-bool Vyrodzhenyi(Triangle t) {
-    return Geron(t) < 1e-9;
+double Triangle::area() const {
+    return heronArea(*this);
 }
 
-int VekDobytok(Triangle t, Point p) {
-    double d1 = (t.B.x - t.A.x) * (p.y - t.A.y) - (t.B.y - t.A.y) * (p.x - t.A.x);
-    double d2 = (t.C.x - t.B.x) * (p.y - t.B.y) - (t.C.y - t.B.y) * (p.x - t.B.x);
-    double d3 = (t.A.x - t.C.x) * (p.y - t.C.y) - (t.A.y - t.C.y) * (p.x - t.C.x);
+bool Vyrodzhenyi(const Triangle &t) {
+    return heronArea(t) < 1e-9;
+}
 
-    if (fabs(d1) < 1e-9 || fabs(d2) < 1e-9 || fabs(d3) < 1e-9)
-        return 2; 
+bool Triangle::contains(const Point &P) const {
+    Triangle T1 = {A, B, P};
+    Triangle T2 = {B, C, P};
+    Triangle T3 = {C, A, P};
 
-    if ((d1 > 0 && d2 > 0 && d3 > 0) || (d1 < 0 && d2 < 0 && d3 < 0))
-        return 1; 
+    double S_main = area();
+    double S_sum = T1.area() + T2.area() + T3.area();
 
-    return 0; 
+    return fabs(S_main - S_sum) < 1e-9;
+}
+static bool onSegment(const Point &A, const Point &B, const Point &P) {
+    double cross = (B.x - A.x) * (P.y - A.y) - (B.y - A.y) * (P.x - A.x);
+    if (fabs(cross) > 1e-9) return false;
+    if (P.x < fmin(A.x, B.x) - 1e-9 || P.x > fmax(A.x, B.x) + 1e-9) return false;
+    if (P.y < fmin(A.y, B.y) - 1e-9 || P.y > fmax(A.y, B.y) + 1e-9) return false;
+    return true;
+}
+
+int Triangle::onBorder(const Point &P) const {
+    if (onSegment(A, B, P)) return 1;
+    if (onSegment(B, C, P)) return 1;
+    if (onSegment(C, A, P)) return 1;
+    return 0;
 }
