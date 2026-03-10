@@ -16,13 +16,15 @@ int main() {
     cout << "Введіть координати вершини C (x y): ";
     cin >> t.C.x >> t.C.y;
 
-    if (Vyrodzhenyi(t))
+    if (Vyrodzhenyi(t)) {
         cout << "Увага: трикутник є виродженим!" << endl;
-    else
-        cout << "Площа трикутника: " << t.area() << endl;
+    } else {
+        cout << "Площа (Герон):      " << heronArea(t) << endl;
+        cout << "Площа (шнурування): " << t.shoelaceArea() << endl;
+    }
 
     int n;
-    cout << "Cкiльки точок перевірити? ";
+    cout << "Скільки точок перевірити? ";
     cin >> n;
 
     for (int i = 1; i <= n; i++) {
@@ -30,13 +32,21 @@ int main() {
         cout << "Точка " << i << " (x y): ";
         cin >> p.x >> p.y;
 
-        if (t.onBorder(p)) {
-            cout << "Точка на  межі трикутника" << endl;
-        } else if (t.contains(p)) {
+        cout << "  [Векторний добуток] ";
+        if (t.onBorder(p))
+            cout << "Точка на межі трикутника" << endl;
+        else if (t.contains(p))
             cout << "Точка належить трикутнику" << endl;
-        } else {
+        else
             cout << "Точка не належить трикутнику" << endl;
-        }
+
+        cout << "  [Метод Герона]      ";
+        if (t.onBorder(p))
+            cout << "Точка на межі трикутника" << endl;
+        else if (t.containsHeron(p))
+            cout << "Точка належить трикутнику" << endl;
+        else
+            cout << "Точка не належить трикутнику" << endl;
     }
 
     return 0;

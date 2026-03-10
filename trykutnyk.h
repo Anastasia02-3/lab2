@@ -13,8 +13,11 @@ struct Triangle {
     Point A, B, C;
 
     double area() const;
+    double shoelaceArea() const;
+    bool checkConsistency() const;
 
     bool contains(const Point &P) const;
+    bool containsHeron(const Point &P) const;
 
     int onBorder(const Point &P) const;
 };
