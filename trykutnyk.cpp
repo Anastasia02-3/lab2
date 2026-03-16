@@ -12,7 +12,7 @@ double heronArea(const Triangle &t) {
     double s = (a + b + c) / 2;
     
     double arg = s * (s - a) * (s - b) * (s - c);
-    if (arg < 0) arg = 0; // Захист від від'ємного значення через похибку
+    if (arg < 0) arg = 0; 
     return sqrt(arg);
 }
 
@@ -29,7 +29,7 @@ bool Triangle::checkConsistency() const {
 }
 
 bool Vyrodzhenyi(const Triangle &t) {
-    // Вироджений — якщо площа менша за нашу точність
+  
    return t.shoelaceArea() < EPS;
 }
 
@@ -56,7 +56,6 @@ bool Triangle::contains(const Point &P) const {
     double d2 = (C.x - B.x) * (P.y - B.y) - (C.y - B.y) * (P.x - B.x);
     double d3 = (A.x - C.x) * (P.y - C.y) - (A.y - C.y) * (P.x - C.x);
 
-    // Враховуємо EPS, щоб межа входила в "contains"
     bool allPos = (d1 >= -EPS) && (d2 >= -EPS) && (d3 >= -EPS);
     bool allNeg = (d1 <= EPS) && (d2 <= EPS) && (d3 <= EPS);
 
@@ -69,6 +68,5 @@ bool Triangle::containsHeron(const Point &P) const {
     double sumAreas = heronArea({A, B, P}) + heronArea({B, C, P}) + heronArea({C, A, P});
     double totalArea = heronArea(*this);
 
-    // Сувора перевірка на 1e-9
     return fabs(sumAreas - totalArea) < EPS;
 }
