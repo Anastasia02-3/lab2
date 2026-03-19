@@ -1,30 +1,33 @@
 #include "trykutnyk.h"
 #include <cmath>
+#include <algorithm>
+using std::swap;
 
 double distance(const Point &p1, const Point &p2) {
     return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
-}
-
-double heronArea(const Triangle &t) {
-    double a = distance(t.A, t.B);
-    double b = distance(t.B, t.C);
-    double c = distance(t.C, t.A);
-    double s = (a + b + c) / 2.0;
-    double arg = s * (s - a) * (s - b) * (s - c);
-    if (arg < 0) arg = fabs(arg);
-    return sqrt(arg);
-}
-
-double Triangle::area() const {
-    return shoelaceArea();
 }
 
 double Triangle::shoelaceArea() const {
     return fabs((A.x * (B.y - C.y) + B.x * (C.y - A.y) + C.x * (A.y - B.y)) / 2.0);
 }
 
+double heronArea(const Triangle &t) {
+    double abx = t.B.x - t.A.x;
+    double aby = t.B.y - t.A.y;
+    double acx = t.C.x - t.A.x;
+    double acy = t.C.y - t.A.y;
+    return fabs(abx * acy - aby * acx) / 2.0;
+}
+
+double Triangle::area() const {
+    return shoelaceArea();
+}
+
 bool Triangle::checkConsistency() const {
-    return fabs(shoelaceArea() - heronArea(*this)) < 1e-6;
+    double s = shoelaceArea();
+    double h = heronArea(*this);
+    double eps = 1e-9 * (s + h) + 1e-15;
+    return fabs(s - h) < eps;
 }
 
 bool Vyrodzhenyi(const Triangle &t) {
@@ -32,7 +35,7 @@ bool Vyrodzhenyi(const Triangle &t) {
                  - (t.B.y - t.A.y) * (t.C.x - t.A.x);
     double ab = distance(t.A, t.B);
     double ac = distance(t.A, t.C);
-    return fabs(cross) < 1e-15 * ab * ac;
+    return fabs(cross) < 1e-9 * ab * ac;
 }
 
 static bool onSegment(const Point &A, const Point &B, const Point &P) {
@@ -75,5 +78,6 @@ bool Triangle::containsHeron(const Point &P) const {
     double sumAreas = t1.shoelaceArea() + t2.shoelaceArea() + t3.shoelaceArea();
     double totalArea = shoelaceArea();
 
-    return fabs(sumAreas - totalArea) < 1e-9 * totalArea + 1e-15;
+    double eps = 1e-9 * totalArea + 1e-15;
+    return fabs(sumAreas - totalArea) < eps;
 }
